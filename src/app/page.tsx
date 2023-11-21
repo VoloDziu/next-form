@@ -1,10 +1,15 @@
-import Image from "next/image";
-import Form from "./components/form/Form";
+import { sql } from "@vercel/postgres";
 
-export default function Home() {
+export default async function Home() {
+  const { rows } = await sql`SELECT * FROM submissions`;
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <Form></Form>
+      {rows.map((submission) => (
+        <div key={submission.id} className="flex gap-2">
+          {submission.name} {submission.email}
+        </div>
+      ))}
     </main>
   );
 }
