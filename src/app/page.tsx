@@ -1,15 +1,23 @@
-import { sql } from "@vercel/postgres";
+import Form from "./components/Form";
+import SubmissionItem from "./components/SubmissionItem";
+import { getSubmissions } from "./submission/db";
 
 export default async function Home() {
-  const { rows } = await sql`SELECT * FROM submissions`;
+  const result = await getSubmissions();
+
+  let content: React.ReactNode = "";
+  if (result.success) {
+    content =
+      result.data?.map((submission) => (
+        <SubmissionItem key={submission.id} submission={submission} />
+      )) ?? "";
+  }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      {rows.map((submission) => (
-        <div key={submission.id} className="flex gap-2">
-          {submission.name} {submission.email}
-        </div>
-      ))}
+    <main className="flex min-h-screen flex-col items-center justify-center p-24 gap-6">
+      <Form />
+
+      {content}
     </main>
   );
 }
