@@ -1,4 +1,4 @@
-import Form from "./components/Form";
+import Form from "./components/formState/Form";
 import SubmissionItem from "./components/SubmissionItem";
 import { getSubmissions } from "./submission/db";
 
