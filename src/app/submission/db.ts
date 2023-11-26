@@ -29,6 +29,12 @@ export async function getSubmissions() {
 
 export async function saveSubmission(formData: FormData) {
   try {
+    await new Promise<void>((resolve, _) => {
+      setTimeout(() => {
+        resolve();
+      }, 2000);
+    });
+
     const data = Submission.parse({
       email: formData.get("email"),
       name: formData.get("name"),
@@ -41,15 +47,16 @@ export async function saveSubmission(formData: FormData) {
 
     revalidatePath("/");
 
-    return { message: "success" };
+    return { success: true, message: "sined up successfully" };
   } catch (e: unknown) {
     if (e instanceof ZodError) {
-      return {
-        error: e.issues[0].message,
-      };
+      return { success: false, message: e.issues[0].message };
     }
 
-    return { error: "Failed to subscribe to the waiting list" };
+    return {
+      success: false,
+      message: "Failed to subscribe to the waiting list",
+    };
   }
 }
 
