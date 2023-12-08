@@ -1,6 +1,6 @@
 "use client";
 
-import { saveSubmission } from "@/app/submission/db";
+import { saveSubmissionForm } from "@/app/db";
 import { useRef } from "react";
 import { Input } from "./Input";
 import { Button } from "./Button";
@@ -12,9 +12,9 @@ export default function Form() {
 
   async function submit(
     _: { success: boolean; message?: string } | null,
-    data: FormData
+    data: FormData,
   ) {
-    const result = await saveSubmission(data);
+    const result = await saveSubmissionForm(data);
     if (result.success) {
       formRef.current?.reset();
     }

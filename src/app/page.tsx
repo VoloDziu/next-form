@@ -1,6 +1,45 @@
-import Form from "./components/formState/Form";
+import Form, { Field } from "./components/formHook/Form";
 import SubmissionItem from "./components/SubmissionItem";
-import { getSubmissions } from "./submission/db";
+import { getSubmissions, saveSubmissionData } from "./db";
+
+const fields: Field[] = [
+  {
+    name: "email",
+    type: "email",
+    label: "Email",
+    options: {
+      required: "email is required",
+      minLength: {
+        value: 3,
+        message: "at least 3 chars",
+      },
+    },
+  },
+  {
+    name: "name",
+    type: "text",
+    label: "Name",
+    options: {
+      required: "name is required",
+      minLength: {
+        value: 5,
+        message: "at least 5 characters long",
+      },
+    },
+  },
+  {
+    name: "message",
+    type: "text",
+    label: "Message",
+    options: {
+      required: "message is required",
+      minLength: {
+        value: 10,
+        message: "at least 10 characters long",
+      },
+    },
+  },
+];
 
 export default async function Home() {
   const result = await getSubmissions();
@@ -14,8 +53,8 @@ export default async function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 gap-6">
-      <Form />
+    <main className="max-w-[300px] p-6">
+      <Form fields={fields} action={saveSubmissionData} />
 
       {content}
     </main>

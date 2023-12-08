@@ -27,7 +27,7 @@ export async function getSubmissions() {
   }
 }
 
-export async function saveSubmission(formData: FormData) {
+export async function saveSubmissionForm(formData: FormData) {
   try {
     await new Promise<void>((resolve, _) => {
       setTimeout(() => {
@@ -43,6 +43,36 @@ export async function saveSubmission(formData: FormData) {
     const result = await sql`
       INSERT INTO submissions (name, email)
       VALUES (${data.name}, ${data.email});
+    `;
+
+    revalidatePath("/");
+
+    return { success: true, message: "sined up successfully" };
+  } catch (e: unknown) {
+    if (e instanceof ZodError) {
+      return { success: false, message: e.issues[0].message };
+    }
+
+    return {
+      success: false,
+      message: "Failed to subscribe to the waiting list",
+    };
+  }
+}
+
+export async function saveSubmissionData(data: unknown) {
+  try {
+    await new Promise<void>((resolve, _) => {
+      setTimeout(() => {
+        resolve();
+      }, 2000);
+    });
+
+    const submission = Submission.parse(data);
+
+    const result = await sql`
+      INSERT INTO submissions (name, email)
+      VALUES (${submission.name}, ${submission.email});
     `;
 
     revalidatePath("/");

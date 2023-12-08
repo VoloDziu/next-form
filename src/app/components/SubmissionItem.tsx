@@ -1,4 +1,4 @@
-import { Submission, deleteSubmission } from "../submission/db";
+import { Submission, deleteSubmission } from "../db";
 
 interface Props {
   submission: Submission;
