@@ -1,6 +1,6 @@
 import Form, { Field } from "./components/formHook/Form";
-import SubmissionItem from "./components/SubmissionItem";
-import { getSubmissions, saveSubmissionData } from "./db";
+import Submissions from "./components/Submissions";
+import { saveSubmissionData } from "./db";
 
 const fields: Field[] = [
   {
@@ -42,21 +42,13 @@ const fields: Field[] = [
 ];
 
 export default async function Home() {
-  const result = await getSubmissions();
-
-  let content: React.ReactNode = "";
-  if (result.success) {
-    content =
-      result.data?.map((submission) => (
-        <SubmissionItem key={submission.id} submission={submission} />
-      )) ?? "";
-  }
-
   return (
     <main className="max-w-[300px] p-6">
+      <h1 className="mb3">React Hook Form</h1>
+
       <Form fields={fields} action={saveSubmissionData} />
 
-      {content}
+      <Submissions />
     </main>
   );
 }

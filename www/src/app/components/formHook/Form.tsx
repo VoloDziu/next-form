@@ -42,19 +42,17 @@ export default function Form({ fields, action }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <fieldset disabled={isSubmitting}>
-        {fields.map((f) => {
-          return (
-            <Input
-              key={f.name}
-              label={f.label}
-              type={f.type}
-              error={<ErrorMessage errors={errors} name={f.name} />}
-              {...register(f.name, {
-                ...f.options,
-              })}
-            />
-          );
-        })}
+        {fields.map((f) => (
+          <Input
+            key={f.name}
+            label={f.label}
+            type={f.type}
+            error={<ErrorMessage errors={errors} name={f.name} />}
+            {...register(f.name, {
+              ...f.options,
+            })}
+          />
+        ))}
       </fieldset>
 
       <button
