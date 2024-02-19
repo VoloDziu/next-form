@@ -70,7 +70,7 @@ export async function saveSubmissionData(data: unknown) {
 
     const submission = Submission.parse(data);
 
-    const result = await sql`
+    await sql`
       INSERT INTO submissions (name, email)
       VALUES (${submission.name}, ${submission.email});
     `;

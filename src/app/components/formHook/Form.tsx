@@ -2,8 +2,15 @@
 
 import { ErrorMessage } from "@hookform/error-message";
 import { useCallback, useState } from "react";
-import { RegisterOptions, useForm } from "react-hook-form";
-import Input from "./Input";
+import { Controller, RegisterOptions, useForm } from "react-hook-form";
+import {
+  Button,
+  FieldError,
+  Input,
+  Label,
+  TextField,
+  Form as FormRAC,
+} from "react-aria-components";
 
 export interface Field {
   name: string;
@@ -20,14 +27,15 @@ interface Props {
 export default function Form({ fields, action }: Props) {
   const [message, setMessage] = useState("");
   const {
-    register,
     handleSubmit,
+    control,
     formState: { isSubmitting, errors },
     reset,
   } = useForm();
 
   const onSubmit = useCallback(
     async (data: unknown) => {
+      console.log("her!!!");
       setMessage("");
       const result = await action(data);
 
@@ -40,29 +48,103 @@ export default function Form({ fields, action }: Props) {
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <fieldset disabled={isSubmitting}>
-        {fields.map((f) => (
-          <Input
-            key={f.name}
-            label={f.label}
-            type={f.type}
-            error={<ErrorMessage errors={errors} name={f.name} />}
-            {...register(f.name, {
-              ...f.options,
-            })}
-          />
-        ))}
-      </fieldset>
+    <FormRAC onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <Controller
+        control={control}
+        name="name"
+        rules={{
+          required: "name is required",
+          minLength: {
+            value: 5,
+            message: "at least 5 characters long",
+          },
+        }}
+        render={({
+          field: { name, value, onChange, onBlur, ref },
+          fieldState: { invalid, error },
+        }) => (
+          <TextField
+            name={name}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            validationBehavior="aria"
+            isInvalid={invalid}
+          >
+            <Label>Name</Label>
+            <Input
+              ref={ref}
+              className="border-4 border-purple-400 text-slate-900 invalid:border-red-300 disabled:cursor-not-allowed disabled:opacity-80"
+            />
+            <FieldError>{error?.message}</FieldError>
+          </TextField>
+        )}
+      />
 
-      <button
-        disabled={isSubmitting}
-        className="bg-slate-600 disabled:cursor-not-allowed disabled:bg-red-400"
-      >
-        Sign up
-      </button>
+      <Controller
+        control={control}
+        name="email"
+        rules={{
+          required: "email is required",
+          minLength: {
+            value: 3,
+            message: "at least 3 chars",
+          },
+        }}
+        render={({
+          field: { name, value, onChange, onBlur, ref },
+          fieldState: { invalid, error },
+        }) => (
+          <TextField
+            name={name}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            validationBehavior="aria"
+            isInvalid={invalid}
+          >
+            <Label>Email</Label>
+            <Input
+              ref={ref}
+              className="border-4 border-purple-400 text-slate-900 invalid:border-red-300 disabled:cursor-not-allowed disabled:opacity-80"
+            />
+            <FieldError>{error?.message}</FieldError>
+          </TextField>
+        )}
+      />
 
-      {message}
-    </form>
+      <Controller
+        control={control}
+        name="message"
+        rules={{
+          required: "message is required",
+          minLength: {
+            value: 10,
+            message: "at least 10 characters long",
+          },
+        }}
+        render={({
+          field: { name, value, onChange, onBlur, ref },
+          fieldState: { invalid, error },
+        }) => (
+          <TextField
+            name={name}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            validationBehavior="aria"
+            isInvalid={invalid}
+          >
+            <Label>Message</Label>
+            <Input
+              ref={ref}
+              className="border-4 border-purple-400 text-slate-900 invalid:border-red-300 disabled:cursor-not-allowed disabled:opacity-80"
+            />
+            <FieldError>{error?.message}</FieldError>
+          </TextField>
+        )}
+      />
+      <Button type="submit">Submit</Button>
+    </FormRAC>
   );
 }
